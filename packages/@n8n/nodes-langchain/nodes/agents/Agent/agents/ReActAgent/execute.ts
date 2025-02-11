@@ -60,6 +60,7 @@ export async function reActAgentAgentExecute(
 		agent,
 		tools,
 		returnIntermediateSteps: options?.returnIntermediateSteps === true,
+		maxIterations: 3,
 	});
 
 	const returnData: INodeExecutionData[] = [];
