@@ -1,0 +1,8 @@
+services:
+  n8n:
+    networks:
+      - shared_network
+
+networks:
+  shared_network:
+    name: shared_network 

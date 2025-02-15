@@ -3,8 +3,6 @@ volumes:
 
 services:
   postgres:
-    networks:
-      - shared_network
     image: postgres:16-alpine
     restart: unless-stopped
     volumes:
@@ -14,8 +12,6 @@ services:
       - POSTGRES_PASSWORD=password
 
   n8n:
-    networks:
-      - shared_network
     build:
       context: .
       dockerfile: Dockerfile
@@ -26,7 +22,3 @@ services:
       DB_POSTGRESDB_HOST: postgres
       DB_TYPE: postgresdb
       DB_POSTGRESDB_PASSWORD: password
-
-networks:
-  shared_network:
-    name: shared_network
