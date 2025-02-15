@@ -12,6 +12,9 @@ services:
       - POSTGRES_PASSWORD=password
 
   n8n:
+    networks:
+      - default
+      - shared_network
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,3 +25,8 @@ services:
       DB_POSTGRESDB_HOST: postgres
       DB_TYPE: postgresdb
       DB_POSTGRESDB_PASSWORD: password
+
+networks:
+  default:
+  shared_network:
+    name: shared_network
