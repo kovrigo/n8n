@@ -10,6 +10,9 @@ services:
     environment:
       - POSTGRES_DB=n8n
       - POSTGRES_PASSWORD=password
+    networks:
+      - default
+      - shared_network
 
   n8n:
     networks:
@@ -25,8 +28,10 @@ services:
       DB_POSTGRESDB_HOST: postgres
       DB_TYPE: postgresdb
       DB_POSTGRESDB_PASSWORD: password
+    ports:
+      - "5678:5678"
 
 networks:
   default:
   shared_network:
-    name: shared_network
+    name: shared_network    # This will create the network if it doesn't exist
