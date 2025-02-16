@@ -22,6 +22,7 @@ import {
 	validateCredentials,
 } from './GenericFunctions';
 import { rowFields, rowOperations } from './RowDescription';
+import { rpcOperations } from './RpcDescription';
 
 export type FieldsUiValues = Array<{
 	fieldId: string;
@@ -61,11 +62,16 @@ export class Supabase implements INodeType {
 						name: 'Row',
 						value: 'row',
 					},
+					{
+						name: 'RPC',
+						value: 'rpc',
+					},
 				],
 				default: 'row',
 			},
 			...rowOperations,
 			...rowFields,
+			...rpcOperations,
 		],
 	};
 
@@ -416,6 +422,59 @@ export class Supabase implements INodeType {
 				}
 			}
 		}
+
+		if (resource === 'rpc') {
+			for (let i = 0; i < length; i++) {
+				const functionName = this.getNodeParameter('functionName', i) as string;
+				const parametersUi = this.getNodeParameter('parametersUi.parameterValues', i, []) as Array<{
+					parameterKey: string;
+					parameterValue: string;
+				}>;
+
+				// Convert parameters array to object
+				const parameters: IDataObject = {};
+				for (const param of parametersUi) {
+					parameters[param.parameterKey] = param.parameterValue;
+				}
+
+				try {
+					// Call the RPC function using POST request to /rpc/{functionName}
+					const response = await supabaseApiRequest.call(
+						this,
+						'POST',
+						`/rpc/${functionName}`,
+						parameters,
+					);
+
+					const executionData = this.helpers.constructExecutionMetaData(
+						this.helpers.returnJsonArray({
+							success: true,
+							function: functionName,
+							result: response,
+							parameters,
+						}),
+						{ itemData: { item: i } },
+					);
+					returnData.push(...executionData);
+				} catch (error) {
+					if (this.continueOnFail()) {
+						const executionData = this.helpers.constructExecutionMetaData(
+							this.helpers.returnJsonArray({
+								success: false,
+								function: functionName,
+								error: error.message,
+								parameters,
+							}),
+							{ itemData: { item: i } },
+						);
+						returnData.push(...executionData);
+						continue;
+					}
+					throw error;
+				}
+			}
+		}
+
 		return [returnData];
 	}
 }
