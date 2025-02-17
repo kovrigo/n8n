@@ -103,6 +103,16 @@ export const reActAgentAgentProperties: INodeProperties[] = [
 				default: false,
 				description: 'Whether or not the output should include intermediate steps the agent took',
 			},
+			{
+				displayName: 'Maximum Iterations',
+				name: 'maxIterations',
+				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
+				default: 5,
+				description: 'Maximum number of iterations the agent will take to answer the prompt',
+			},
 		],
 	},
 ];

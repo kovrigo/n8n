@@ -40,6 +40,7 @@ export async function reActAgentAgentExecute(
 		suffixChat?: string;
 		humanMessageTemplate?: string;
 		returnIntermediateSteps?: boolean;
+		maxIterations?: number;
 	};
 	let agent: ChatAgent | ZeroShotAgent;
 
@@ -60,7 +61,7 @@ export async function reActAgentAgentExecute(
 		agent,
 		tools,
 		returnIntermediateSteps: options?.returnIntermediateSteps === true,
-		maxIterations: 3,
+		maxIterations: options?.maxIterations ?? 5,
 	});
 
 	const returnData: INodeExecutionData[] = [];
@@ -97,7 +98,7 @@ export async function reActAgentAgentExecute(
 			}
 
 			if (input === undefined) {
-				throw new NodeOperationError(this.getNode(), 'The ‘text‘ parameter is empty.');
+				throw new NodeOperationError(this.getNode(), 'The 'text' parameter is empty.');
 			}
 
 			if (prompt) {
